@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charSet="utf-8" />
+    <title>PokéVault</title>
+    <script>
+      // SPA deep-link bounce: GitHub Pages serves this file for any URL it has
+      // no literal file for (refresh on /card/123, shared links). Stash the
+      // real path and load the app root; the inline script in +html.tsx
+      // restores it before the router boots, so the app opens on the page the
+      // user actually asked for. One-shot: the flag is deleted before replace,
+      // so a genuinely unknown route lands on the app's own not-found screen.
+      (function () {
+        try {
+          var path = location.pathname + location.search + location.hash;
+          if (path && path !== '/' && path !== '/index.html') {
+            sessionStorage.setItem('pokevault-spa-redirect', path);
+          }
+        } catch (e) { /* private mode: fall through to the app root */ }
+        location.replace('/');
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>
