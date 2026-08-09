@@ -40,9 +40,14 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Same-origin, content-hashed assets are safe to serve cache-first: the name
-// changes whenever the bytes do, so a cached copy is never a stale copy.
-const IMMUTABLE_ASSET = /\.(js|css|woff2?|ttf|otf|png|jpe?g|gif|svg|webp|ico|mp4)$/i;
+// Only the content-hashed bundle paths are safe to serve cache-first: the name
+// changes whenever the bytes do. Bare-root files (favicon, icons, sw.js itself)
+// keep the SAME name across regenerations — caching them first would freeze them.
+const IMMUTABLE_ASSET = /^\/(_expo\/static|assets)\//;
+
+// Bare-root same-origin files: network-first so a regenerated icon shows up
+// without a cache-version bump; the cache only answers offline.
+const ROOT_FILE = /\.(ico|png|jpe?g|gif|svg|webp|mp4|json)$/i;
 
 self.addEventListener('fetch', (event) => {
   const request = event.request;
@@ -71,7 +76,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Immutable same-origin assets: cache-first for a fast, offline-capable launch.
+  // Immutable hashed bundle assets: cache-first for a fast, offline launch.
   if (IMMUTABLE_ASSET.test(url.pathname)) {
     event.respondWith(
       caches.match(request).then(
@@ -86,6 +91,23 @@ self.addEventListener('fetch', (event) => {
           }),
       ),
     );
+    return;
+  }
+
+  // Bare-root files: network-first, cached copy only when the network is gone.
+  if (ROOT_FILE.test(url.pathname)) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response.ok) {
+            const copy = response.clone();
+            caches.open(SHELL_CACHE).then((cache) => cache.put(request, copy));
+          }
+          return response;
+        })
+        .catch(() => caches.match(request).then((hit) => hit || Response.error())),
+    );
+    return;
   }
   // Any other same-origin GET falls through to the browser's default handling.
 });
