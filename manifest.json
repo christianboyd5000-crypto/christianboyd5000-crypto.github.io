@@ -3,7 +3,7 @@
   "short_name": "PokéVault",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#E8EAED",
+  "background_color": "#272C37",
   "theme_color": "#2A2E36",
   "icons": [
     {
