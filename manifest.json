@@ -4,8 +4,8 @@
   "description": "Track your Pokémon and One Piece card collection, scan binder pages, and check market prices.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#272C37",
-  "theme_color": "#2A2E36",
+  "background_color": "#D6E7C9",
+  "theme_color": "#D6E7C9",
   "categories": ["shopping", "utilities"],
   "icons": [
     {
