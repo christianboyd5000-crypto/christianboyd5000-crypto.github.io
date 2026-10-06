@@ -133,7 +133,23 @@ self.addEventListener('push', (event) => {
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-  const url = (event.notification.data && event.notification.data.url) || '/';
+  const raw = (event.notification.data && event.notification.data.url) || '/';
+  // The URL comes from a push payload, so treat it as untrusted: only
+  // same-origin relative paths ('/x', but NOT '//host' — that is a protocol-
+  // relative escape) and absolute https: URLs are honoured. Anything else —
+  // javascript:, data:, http:, or plain junk — falls back to the app root.
+  let url = '/';
+  if (typeof raw === 'string') {
+    if (raw.startsWith('/') && !raw.startsWith('//')) {
+      url = raw;
+    } else {
+      try {
+        if (new URL(raw).protocol === 'https:') url = raw;
+      } catch {
+        // Unparseable: keep the '/' fallback.
+      }
+    }
+  }
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windows) => {
       for (const client of windows) {

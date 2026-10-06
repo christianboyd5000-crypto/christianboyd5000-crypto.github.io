@@ -1,10 +1,12 @@
 {
   "name": "PokéVault",
   "short_name": "PokéVault",
+  "description": "Track your Pokémon and One Piece card collection, scan binder pages, and check market prices.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#272C37",
-  "theme_color": "#2A2E36",
+  "background_color": "#D6E7C9",
+  "theme_color": "#D6E7C9",
+  "categories": ["shopping", "utilities"],
   "icons": [
     {
       "src": "/icon-192.png",
@@ -15,6 +17,26 @@
       "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Scan cards",
+      "short_name": "Scan",
+      "url": "/scan",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Trade",
+      "short_name": "Trade",
+      "url": "/trade",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Deal check",
+      "short_name": "Deal check",
+      "url": "/deal-check",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
 }
